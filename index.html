@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="量化防禦">
+    <title>物理量化交易儀表板</title>
+    <style>
+        :root {
+            --bg-color: #000000;
+            --card-bg: #1c1c1e;
+            --text-color: #f2f2f7;
+            --border-color: #2c2c2e;
+            --green: #34c759;
+            --red: #ff3b30;
+            --yellow: #ffcc00;
+            --blue: #0a84ff;
+        }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: calc(20px + env(safe-area-inset-top)) 16px 20px 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container { width: 100%; max-width: 450px; }
+        h1 { font-size: 23px; text-align: center; color: #ffffff; font-weight: 700; margin-bottom: 4px; }
+        .subtitle { text-align: center; color: #8e8e93; font-size: 12px; margin-bottom: 8px; }
+        
+        .time-box {
+            text-align: center;
+            font-family: monospace;
+            font-size: 14px;
+            color: var(--yellow);
+            margin-bottom: 16px;
+            background: #1c1c1e;
+            padding: 6px 12px;
+            border-radius: 20px;
+            display: block;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+            border: 1px solid var(--border-color);
+        }
+
+        .loading-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 24px;
+            text-align: center;
+            margin-top: 40px;
+        }
+        .progress-container {
+            width: 100%;
+            background-color: #2c2c2e;
+            border-radius: 10px;
+            margin: 16px 0;
+            overflow: hidden;
+        }
+        .progress-bar {
+            width: 0%;
+            height: 6px;
+            background-color: var(--blue);
+            transition: width 0.2s ease;
+        }
+        .log-text { font-size: 13px; color: var(--yellow); margin-bottom: 8px; font-family: monospace; }
+        
+        .error-panel {
+            background: #2c2c2e;
+            border: 1px solid var(--red);
+            border-radius: 10px;
+            padding: 16px;
+            margin-top: 16px;
+            font-size: 12px;
+            color: #ff9500;
+            text-align: left;
+            white-space: pre-wrap;
+            display: none;
+            line-height: 1.5;
+        }
+
+        .price-box {
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(180deg, #1c1c1e 0%, #0a84ff10 100%);
+            border-radius: 14px;
+            border: 1px solid rgba(10, 132, 255, 0.2);
+            margin-bottom: 16px;
+            position: relative;
+        }
+        .price-title { font-size: 14px; color: #0a84ff; font-weight: 600; letter-spacing: 1px; }
+        .price-value { font-size: 34px; font-weight: 800; margin-top: 8px; color: #ffffff; transition: color 0.2s ease; }
+        
+        .pulse-dot {
+            position: absolute; top: 12px; right: 12px;
+            width: 8px; height: 8px; border-radius: 50%;
+            background-color: var(--green);
+            box-shadow: 0 0 8px var(--green);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { opacity: 0.3; }
+            50% { opacity: 1; }
+            100% { opacity: 0.3; }
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 16px;
+            border: 1px solid var(--border-color);
+        }
+        .card-main { display: flex; align-items: center; }
+        .card-left { flex: 1; padding-right: 12px; }
+        .card-left h3 { margin: 0 0 6px 0; font-size: 16px; color: #ffffff; font-weight: 600; }
+        .card-left .desc { font-size: 12px; color: #8e8e93; line-height: 1.4; }
+        .card-right { display: flex; flex-direction: column; align-items: center; width: 100px; justify-content: center; }
+        
+        .status-light { width: 32px; height: 32px; border-radius: 50%; background-color: #48484a; margin-bottom: 8px; }
+        .status-text { font-weight: 700; font-size: 13px; text-align: center; }
+
+        .legend-box {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px dashed #2c2c2e;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .legend-item { display: flex; align-items: center; font-size: 11px; color: #aeaeb2; }
+        .legend-dot { width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; display: inline-block; }
+        .dot-green { background-color: var(--green); box-shadow: 0 0 4px var(--green); }
+        .dot-yellow { background-color: var(--yellow); box-shadow: 0 0 4px var(--yellow); }
+        .dot-red { background-color: var(--red); box-shadow: 0 0 4px var(--red); }
+        .legend-label { font-weight: 600; margin-right: 6px; width: 55px; }
+
+        .result-box { background: #1c1c1e; border: 1px solid #3a3a3c; text-align: center; padding: 16px; border-radius: 14px; margin-bottom: 16px;}
+        .result-box h3 { margin: 0; font-size: 14px; color: #8e8e93; }
+        .order-amount { font-size: 38px; color: var(--blue); font-weight: 800; margin: 10px 0; }
+        .strategy-desc { font-size: 13px; color: #aeaeb2; line-height: 1.5; padding: 0 8px; text-align: justify; }
+
+        .btn-refresh {
+            width: 100%; background: #2c2c2e; border: none; color: var(--blue);
+            padding: 14px; border-radius: 12px; font-size: 16px; font-weight: 600;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>物理量化防禦系統</h1>
+    <div class="subtitle">HMM 狀態 + 夏農資訊熵 + 波茲曼資金分配</div>
+    
+    <div id="live-time" class="time-box">⏱️ 時空座標：<span id="live-time-span">00:00:00</span></div>
+
+    <div id="loading-box" class="loading-box">
+        <div style="font-size: 17px; font-weight: bold; margin-bottom: 10px; color: #ffffff;">🌌 正在解構宇宙幾何...</div>
+        <div id="log-status" class="log-text">網絡中樞連線中...</div>
+        <div class="progress-container">
+            <div id="progress-bar" class="progress-bar"></div>
+        </div>
+        <div id="error-panel" class="error-panel"></div>
+    </div>
+    
+    <div id="dashboard" style="display: none;">
+        <div class="price-box">
+            <div class="pulse-dot"></div>
+            <div class="price-title">BTC/USDT 幣安即時現價 (5s更新)</div>
+            <div id="btc-price" class="price-value">$0.00</div>
+        </div>
+
+        <div class="card">
+            <div class="card-main">
+                <div class="card-left">
+                    <h3>HMM 隱馬可夫狀態</h3>
+                    <div class="desc">自動識別隱藏的牛熊相變環境，排除主觀情緒干擾。</div>
+                </div>
+                <div class="card-right">
+                    <div id="hmm-light" class="status-light"></div>
+                    <div id="hmm-text" class="status-text">計算中</div>
+                </div>
+            </div>
+            <div class="legend-box">
+                <div class="legend-item"><span class="legend-dot dot-green"></span><span class="legend-label" style="color: var(--green);">安全牛市:</span> 波動率在正常引力內，允許現貨進場位能。</div>
+                <div class="legend-item"><span class="legend-dot dot-red"></span><span class="legend-label" style="color: var(--red);">恐慌相變:</span> 市場發生黑天鵝坍塌，系統強制熔斷觀望。</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-main">
+                <div class="card-left">
+                    <h3>夏農資訊熵過濾</h3>
+                    <div class="desc">量化市場微觀隨機性。熵值過高代表市場充滿虛假穿刺噪訊。</div>
+                </div>
+                <div class="card-right">
+                    <div id="entropy-light" class="status-light"></div>
+                    <div id="entropy-text" class="status-text">計算中</div>
+                </div>
+            </div>
+            <div class="legend-box">
+                <div class="legend-item"><span class="legend-dot dot-green"></span><span class="legend-label" style="color: var(--green);">資訊乾淨:</span> K線結構扎實，沒有無意義的來回上下插針。</div>
+                <div class="legend-item"><span class="legend-dot dot-yellow"></span><span class="legend-label" style="color: var(--yellow);">噪訊過高:</span> 多空極端拉扯，散戶磨損高，系統暫緩資金注入。</div>
+            </div>
+        </div>
+
+        <div class="card result-box">
+            <h3>波茲曼熱力學 1,000 美元現貨下單建議</h3>
+            <div id="order-value" class="order-amount">$0.00</div>
+            <div id="strategy-text" class="strategy-desc">等待防禦閘門評估中...</div>
+        </div>
+        
+        <button class="btn-refresh" onclick="location.reload()">🔄 重置系統網絡</button>
+    </div>
+</div>
+
+<script>
+var cachedKlines = null;
+var lastPrice = 0;
+
+// 【保證優先執行】啟動極速時鐘，獨立運作不被任何連線拖累
+function startClock() {
+    setInterval(function() {
+        var now = new Date();
+        var h = String(now.getHours()).padStart(2, '0');
+        var m = String(now.getMinutes()).padStart(2, '0');
+        var s = String(now.getSeconds()).padStart(2, '0');
+        var target = document.getElementById('live-time-span');
+        if(target) target.innerText = h + ':' + m + ':' + s;
+    }, 1000);
+}
+startClock(); // 直接在最前線執行
+
+function calculateShannonEntropy(returns) {
+    var bins = {};
+    var binSize = 0.005;
+    returns.forEach(function(r) {
+        var binIndex = Math.floor(r / binSize);
+        bins[binIndex] = (bins[binIndex] || 0) + 1;
+    });
+    var entropy = 0;
+    var total = returns.length;
+    for (var key in bins) {
+        var p = bins[key] / total;
+        if (p > 0) entropy -= p * Math.log2(p);
+    }
+    return entropy;
+}
+
+function computeAndRender(klines, currentPrice) {
+    var prices = klines.map(function(d) { return parseFloat(d[4]); }); 
+    var highs = klines.map(function(d) { return parseFloat(d[2]); });   
+    
+    prices[prices.length - 1] = currentPrice;
+
+    var returns = [];
+    var ranges = [];
+    for(var i = 1; i < prices.length; i++) {
+        returns.push(Math.log(prices[i] / prices[i-1]));
+        ranges.push((highs[i] - parseFloat(klines[i][3])) / prices[i]);
+    }
+
+    var avgRange = ranges.reduce(function(a,b){return a+b;}, 0) / ranges.length;
+    var latestRange = ranges[ranges.length - 1];
+    var isBullState = latestRange < avgRange * 1.25; 
+
+    var recentReturns = returns.slice(-14);
+    var entropy = calculateShannonEntropy(recentReturns);
+    var isEntropySafe = entropy < 2.35;
+
+    var priceElement = document.getElementById('btc-price');
+    if (lastPrice > 0 && currentPrice !== lastPrice) {
+        priceElement.style.color = currentPrice >= lastPrice ? 'var(--green)' : 'var(--red)';
+        setTimeout(function() { priceElement.style.color = '#ffffff'; }, 400);
+    }
+    lastPrice = currentPrice;
+
+    document.getElementById('hmm-light').style.backgroundColor = isBullState ? 'var(--green)' : 'var(--red)';
+    document.getElementById('hmm-text').innerText = isBullState ? '安全牛市' : '恐慌相變';
+    document.getElementById('hmm-text').style.color = isBullState ? 'var(--green)' : 'var(--red)';
+
+    document.getElementById('entropy-light').style.backgroundColor = isEntropySafe ? 'var(--green)' : 'var(--yellow)';
+    document.getElementById('entropy-text').innerText = isEntropySafe ? '資訊乾淨' : '噪訊過高';
+    document.getElementById('entropy-text').style.color = isEntropySafe ? 'var(--green)' : 'var(--yellow)';
+
+    var recent30DaysHigh = Math.max.apply(null, highs.slice(-30));
+    var suggestedOrder = 0;
+    var strategyDesc = "";
+
+    if (!isBullState) {
+        strategyDesc = "【防禦閘門攔截】HMM 偵測到市場進入高危險恐慌相變狀態。現貨做做策略強制關機。請保持 1,000 美元現金空倉。";
+    } else if (!isEntropySafe) {
+        strategyDesc = "【防禦閘門攔截】市場當前隨機噪訊（夏農熵）過高，插針行情頻繁。為避免資產磨損，系統建議空倉觀望。";
+    } else {
+        if (currentPrice < recent30DaysHigh) {
+            var energy = (recent30High - currentPrice) / recent30DaysHigh;
+            var kT = 0.15; 
+            var boltzmannFactor = Math.exp(energy / kT) - 1;
+            suggestedOrder = Math.min((1000 * 0.15) * boltzmannFactor, 150);
+            if(suggestedOrder < 0) suggestedOrder = 0;
+            strategyDesc = "【安全，允許執行】市場相位正常。目前價格相較於近月高點 ($" + recent30DaysHigh.toLocaleString() + ") 出現低位能缺口。建議今日手動購入現貨 " + suggestedOrder.toFixed(2) + " 美元。";
+        } else {
+            strategyDesc = "【高位能觀望】目前比特幣正處於 30 日最高位能區點 ($" + recent30DaysHigh.toLocaleString() + ")，熱力學能量滿載，不宜追高。";
+        }
+    }
+
+    priceElement.innerText = '$' + currentPrice.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    document.getElementById('order-value').innerText = '$' + suggestedOrder.toFixed(2);
+    document.getElementById('strategy-text').innerText = strategyDesc;
+}
+
+function fetchTickerUpdate() {
+    fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT')
+        .then(function(res) { return res.json(); })
+        .then(function(data) {
+            var currentPrice = parseFloat(data.price);
+            if (cachedKlines) {
+                computeAndRender(cachedKlines, currentPrice);
+            }
+        })
+        .catch(function(e) {});
+}
+
+// 傳統的開機與攔截設計
+function runSystemInit() {
+    var bar = document.getElementById('progress-bar');
+    var logStatus = document.getElementById('log-status');
+    var errPanel = document.getElementById('error-panel');
+
+    bar.style.width = '30%';
+    logStatus.innerText = '步驟 1/3: 請求網關發送...';
+
+    fetch('https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1d&limit=100')
+        .then(function(res) {
+            if (!res.ok) throw new Error('HTTP拒絕對外連線代碼: ' + res.status);
+            bar.style.width = '60%';
+            logStatus.innerText = '步驟 2/3: 解析歷史 K 線資料...';
+            return res.json();
+        })
+        .then(function(kData) {
+            cachedKlines = kData;
+            bar.style.width = '85%';
+            logStatus.innerText = '步驟 3/3: 擷取最即時微觀價格點...';
+            return fetch('https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT');
+        })
+        .then(function(pRes) {
+            if (!pRes.ok) throw new Error('即時行情節點受阻');
+            return pRes.json();
+        })
+        .then(function(pData) {
+            var currentPrice = parseFloat(pData.price);
+            bar.style.width = '100%';
+            
+            computeAndRender(cachedKlines, currentPrice);
+            
+            document.getElementById('loading-box').style.display = 'none';
+            document.getElementById('dashboard').style.display = 'block';
+
+            setInterval(fetchTickerUpdate, 5000);
+        })
+        .catch(function(error) {
+            // ❌ 如果點不開，這次保證能在最上方大噴出錯誤
+            bar.style.backgroundColor = 'var(--red)';
+            logStatus.innerText = '❌ 數據載入失敗';
+            logStatus.style.color = 'var(--red)';
+            
+            errPanel.style.display = 'block';
+            errPanel.innerText = '【連線遭受系統阻斷】\n原因: ' + error.message + '\n\n[精確診斷]: \n你的 iPhone 隱私安全機制已成功將這份本地 HTML 檔案隔離，禁止它連上外網抓取任何數據。\n\n[唯一解法]: \n請將此代碼放到 Vercel 或 GitHub Pages 等具有網址的伺服器。';
+        });
+}
+
+// 啟動
+runSystemInit();
+</script>
+</body>
+</html>
