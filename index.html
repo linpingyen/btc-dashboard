@@ -86,66 +86,50 @@
             line-height: 1.5;
         }
 
+        /* 👑 最終最高指揮官燈號面板 */
+        .master-signal-box {
+            background: #1c1c1e;
+            border-radius: 14px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 16px;
+            border: 2px solid #3a3a3c;
+            transition: all 0.4s cubic-bezier(0.1, 0.8, 0.2, 1);
+        }
+        .master-title { font-size: 13px; color: #8e8e93; font-weight: 600; letter-spacing: 1px; margin-bottom: 8px; }
+        .master-status-text { font-size: 32px; font-weight: 900; letter-spacing: 2px; text-shadow: 0 0 10px rgba(255,255,255,0.1); }
+
         .price-box {
             text-align: center;
-            padding: 20px;
-            background: linear-gradient(180deg, #1c1c1e 0%, #0a84ff10 100%);
+            padding: 16px;
+            background: #1c1c1e;
             border-radius: 14px;
-            border: 1px solid rgba(10, 132, 255, 0.2);
+            border: 1px solid var(--border-color);
             margin-bottom: 16px;
-            position: relative;
         }
-        .price-title { font-size: 14px; color: #0a84ff; font-weight: 600; letter-spacing: 1px; }
-        .price-value { font-size: 34px; font-weight: 800; margin-top: 8px; color: #ffffff; transition: color 0.2s ease; }
-        
-        .pulse-dot {
-            position: absolute; top: 12px; right: 12px;
-            width: 8px; height: 8px; border-radius: 50%;
-            background-color: var(--green);
-            box-shadow: 0 0 8px var(--green);
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0% { opacity: 0.3; }
-            50% { opacity: 1; }
-            100% { opacity: 0.3; }
-        }
+        .price-title { font-size: 12px; color: #8e8e93; }
+        .price-value { font-size: 28px; font-weight: 800; margin-top: 4px; color: #ffffff; transition: color 0.2s ease; }
 
         .card {
             background: var(--card-bg);
             border-radius: 14px;
-            padding: 16px;
-            margin-bottom: 16px;
+            padding: 14px;
+            margin-bottom: 12px;
             border: 1px solid var(--border-color);
         }
         .card-main { display: flex; align-items: center; }
         .card-left { flex: 1; padding-right: 12px; }
-        .card-left h3 { margin: 0 0 6px 0; font-size: 16px; color: #ffffff; font-weight: 600; }
-        .card-left .desc { font-size: 12px; color: #8e8e93; line-height: 1.4; }
-        .card-right { display: flex; flex-direction: column; align-items: center; width: 100px; justify-content: center; }
+        .card-left h3 { margin: 0 0 4px 0; font-size: 15px; color: #ffffff; font-weight: 600; }
+        .card-left .desc { font-size: 11px; color: #8e8e93; line-height: 1.3; }
+        .card-right { display: flex; flex-direction: column; align-items: center; width: 90px; justify-content: center; }
         
-        .status-light { width: 32px; height: 32px; border-radius: 50%; background-color: #48484a; margin-bottom: 8px; }
-        .status-text { font-weight: 700; font-size: 13px; text-align: center; }
+        .status-light { width: 24px; height: 24px; border-radius: 50%; background-color: #48484a; margin-bottom: 4px; }
+        .status-text { font-weight: 700; font-size: 12px; text-align: center; }
 
-        .legend-box {
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 1px dashed #2c2c2e;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-        .legend-item { display: flex; align-items: center; font-size: 11px; color: #aeaeb2; }
-        .legend-dot { width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; display: inline-block; }
-        .dot-green { background-color: var(--green); box-shadow: 0 0 4px var(--green); }
-        .dot-yellow { background-color: var(--yellow); box-shadow: 0 0 4px var(--yellow); }
-        .dot-red { background-color: var(--red); box-shadow: 0 0 4px var(--red); }
-        .legend-label { font-weight: 600; margin-right: 6px; width: 55px; }
-
-        .result-box { background: #1c1c1e; border: 1px solid #3a3a3c; text-align: center; padding: 16px; border-radius: 14px; margin-bottom: 16px;}
-        .result-box h3 { margin: 0; font-size: 14px; color: #8e8e93; }
-        .order-amount { font-size: 38px; color: var(--blue); font-weight: 800; margin: 10px 0; }
-        .strategy-desc { font-size: 13px; color: #aeaeb2; line-height: 1.5; padding: 0 8px; text-align: justify; }
+        .result-box { background: #1c1c1e; border: 1px solid #3a3a3c; text-align: center; padding: 20px; border-radius: 14px; margin-bottom: 16px; }
+        .result-box h3 { margin: 0; font-size: 13px; color: #8e8e93; }
+        .order-amount { font-size: 42px; color: var(--blue); font-weight: 900; margin: 8px 0; }
+        .strategy-desc { font-size: 13px; color: #f2f2f7; line-height: 1.5; padding: 0 4px; text-align: justify; font-weight: 400; }
 
         .btn-refresh {
             width: 100%; background: #2c2c2e; border: none; color: var(--blue);
@@ -158,7 +142,7 @@
 
 <div class="container">
     <h1>物理量化防禦系統</h1>
-    <div class="subtitle">HMM 狀態 + 夏農資訊熵 + 波茲曼資金分配</div>
+    <div class="subtitle">四維矩陣 · 最終最高決策中樞</div>
     
     <div id="live-time" class="time-box">⏱️ 時空座標：<span id="live-time-span">00:00:00</span></div>
 
@@ -172,26 +156,33 @@
     </div>
     
     <div id="dashboard" style="display: none;">
+        
+        <div id="master-box" class="master-signal-box">
+            <div class="master-title">🚨 SYSTEM MASTER SIGNAL / 最終決策指揮官</div>
+            <div id="master-status" class="master-status-text">初始化中</div>
+        </div>
+
         <div class="price-box">
-            <div class="pulse-dot"></div>
             <div class="price-title">BTC/USDT 幣安即時現價 (5s更新)</div>
             <div id="btc-price" class="price-value">$0.00</div>
+        </div>
+
+        <div id="decision-box" class="card result-box">
+            <h3 id="decision-title">波茲曼熱力學 1,000 美元資產分配</h3>
+            <div id="order-value" class="order-amount">$0.00</div>
+            <div id="strategy-text" class="strategy-desc">等待防禦閘門評估中...</div>
         </div>
 
         <div class="card">
             <div class="card-main">
                 <div class="card-left">
-                    <h3>HMM 隱馬可夫狀態</h3>
-                    <div class="desc">自動識別隱藏的牛熊相變環境，排除主觀情緒干擾。</div>
+                    <h3>HMM 隱馬可夫相變</h3>
+                    <div class="desc">監控宏觀引力結構。若發生相變坍塌，全面強制熔斷。</div>
                 </div>
                 <div class="card-right">
                     <div id="hmm-light" class="status-light"></div>
                     <div id="hmm-text" class="status-text">計算中</div>
                 </div>
-            </div>
-            <div class="legend-box">
-                <div class="legend-item"><span class="legend-dot dot-green"></span><span class="legend-label" style="color: var(--green);">安全牛市:</span> 波動率在正常引力內，允許現貨進場位能。</div>
-                <div class="legend-item"><span class="legend-dot dot-red"></span><span class="legend-label" style="color: var(--red);">恐慌相變:</span> 市場發生黑天鵝坍塌，系統強制熔斷觀望。</div>
             </div>
         </div>
 
@@ -199,23 +190,26 @@
             <div class="card-main">
                 <div class="card-left">
                     <h3>夏農資訊熵過濾</h3>
-                    <div class="desc">量化市場微觀隨機性。熵值過高代表市場充滿虛假穿刺噪訊。</div>
+                    <div class="desc">監控市場混亂度。噪訊過高代表充斥隨機插針洗盤。</div>
                 </div>
                 <div class="card-right">
                     <div id="entropy-light" class="status-light"></div>
                     <div id="entropy-text" class="status-text">計算中</div>
                 </div>
             </div>
-            <div class="legend-box">
-                <div class="legend-item"><span class="legend-dot dot-green"></span><span class="legend-label" style="color: var(--green);">資訊乾淨:</span> K線結構扎實，沒有無意義的來回上下插針。</div>
-                <div class="legend-item"><span class="legend-dot dot-yellow"></span><span class="legend-label" style="color: var(--yellow);">噪訊過高:</span> 多空極端拉扯，散戶磨損高，系統暫緩資金注入。</div>
-            </div>
         </div>
 
-        <div class="card result-box">
-            <h3>波茲曼熱力學 1,000 美元現貨下單建議</h3>
-            <div id="order-value" class="order-amount">$0.00</div>
-            <div id="strategy-text" class="strategy-desc">等待防禦閘門評估中...</div>
+        <div class="card">
+            <div class="card-main">
+                <div class="card-left">
+                    <h3>RSI 相空間動能</h3>
+                    <div class="desc">監控微觀超買超賣邊界，動態捕捉兩端極端反轉點。</div>
+                </div>
+                <div class="card-right">
+                    <div id="rsi-light" class="status-light"></div>
+                    <div id="rsi-text" class="status-text">計算中</div>
+                </div>
+            </div>
         </div>
         
         <button class="btn-refresh" onclick="location.reload()">🔄 重置系統網絡</button>
@@ -226,7 +220,6 @@
 var cachedKlines = null;
 var lastPrice = 0;
 
-// 【保證優先執行】啟動極速時鐘，獨立運作不被任何連線拖累
 function startClock() {
     setInterval(function() {
         var now = new Date();
@@ -237,7 +230,7 @@ function startClock() {
         if(target) target.innerText = h + ':' + m + ':' + s;
     }, 1000);
 }
-startClock(); // 直接在最前線執行
+startClock();
 
 function calculateShannonEntropy(returns) {
     var bins = {};
@@ -255,10 +248,23 @@ function calculateShannonEntropy(returns) {
     return entropy;
 }
 
+function calculateRSI(prices) {
+    var periods = 14;
+    if (prices.length <= periods) return 50;
+    var gains = 0;
+    var losses = 0;
+    for (var i = prices.length - periods; i < prices.length; i++) {
+        var diff = prices[i] - prices[i - 1];
+        if (diff > 0) gains += diff;
+        else losses -= diff;
+    }
+    if (losses === 0) return 100;
+    return 100 - (100 / (1 + (gains / losses)));
+}
+
 function computeAndRender(klines, currentPrice) {
     var prices = klines.map(function(d) { return parseFloat(d[4]); }); 
     var highs = klines.map(function(d) { return parseFloat(d[2]); });   
-    
     prices[prices.length - 1] = currentPrice;
 
     var returns = [];
@@ -270,12 +276,17 @@ function computeAndRender(klines, currentPrice) {
 
     var avgRange = ranges.reduce(function(a,b){return a+b;}, 0) / ranges.length;
     var latestRange = ranges[ranges.length - 1];
+    
+    // 指標1解算：HMM 狀態
     var isBullState = latestRange < avgRange * 1.25; 
-
+    // 指標2解算：夏農熵
     var recentReturns = returns.slice(-14);
     var entropy = calculateShannonEntropy(recentReturns);
     var isEntropySafe = entropy < 2.35;
+    // 指標3解算：RSI
+    var rsi = calculateRSI(prices);
 
+    // 價格閃爍
     var priceElement = document.getElementById('btc-price');
     if (lastPrice > 0 && currentPrice !== lastPrice) {
         priceElement.style.color = currentPrice >= lastPrice ? 'var(--green)' : 'var(--red)';
@@ -283,6 +294,7 @@ function computeAndRender(klines, currentPrice) {
     }
     lastPrice = currentPrice;
 
+    // 子指標介面更新
     document.getElementById('hmm-light').style.backgroundColor = isBullState ? 'var(--green)' : 'var(--red)';
     document.getElementById('hmm-text').innerText = isBullState ? '安全牛市' : '恐慌相變';
     document.getElementById('hmm-text').style.color = isBullState ? 'var(--green)' : 'var(--red)';
@@ -291,29 +303,95 @@ function computeAndRender(klines, currentPrice) {
     document.getElementById('entropy-text').innerText = isEntropySafe ? '資訊乾淨' : '噪訊過高';
     document.getElementById('entropy-text').style.color = isEntropySafe ? 'var(--green)' : 'var(--yellow)';
 
-    var recent30DaysHigh = Math.max.apply(null, highs.slice(-30));
-    var suggestedOrder = 0;
+    var rsiLight = document.getElementById('rsi-light');
+    var rsiText = document.getElementById('rsi-text');
+    rsiText.innerText = 'RSI: ' + rsi.toFixed(1);
+    if (rsi >= 70) { rsiLight.style.backgroundColor = 'var(--red)'; rsiText.style.color = 'var(--red)'; }
+    else if (rsi <= 30) { rsiLight.style.backgroundColor = 'var(--green)'; rsiText.style.color = 'var(--green)'; }
+    else { rsiLight.style.backgroundColor = 'var(--yellow)'; rsiText.style.color = 'var(--yellow)'; }
+
+    // 👑 最終指揮官決策邏輯矩陣
+    var masterBox = document.getElementById('master-box');
+    var masterStatus = document.getElementById('master-status');
+    var dBox = document.getElementById('decision-box');
+    var dTitle = document.getElementById('decision-title');
+    var dValue = document.getElementById('order-value');
     var strategyDesc = "";
 
-    if (!isBullState) {
-        strategyDesc = "【防禦閘門攔截】HMM 偵測到市場進入高危險恐慌相變狀態。現貨做做策略強制關機。請保持 1,000 美元現金空倉。";
-    } else if (!isEntropySafe) {
-        strategyDesc = "【防禦閘門攔截】市場當前隨機噪訊（夏農熵）過高，插針行情頻繁。為避免資產磨損，系統建議空倉觀望。";
-    } else {
-        if (currentPrice < recent30DaysHigh) {
-            var energy = (recent30High - currentPrice) / recent30DaysHigh;
-            var kT = 0.15; 
-            var boltzmannFactor = Math.exp(energy / kT) - 1;
-            suggestedOrder = Math.min((1000 * 0.15) * boltzmannFactor, 150);
-            if(suggestedOrder < 0) suggestedOrder = 0;
-            strategyDesc = "【安全，允許執行】市場相位正常。目前價格相較於近月高點 ($" + recent30DaysHigh.toLocaleString() + ") 出現低位能缺口。建議今日手動購入現貨 " + suggestedOrder.toFixed(2) + " 美元。";
+    // 情況 1：觸及右側極端超買高點（無視買入，強制高點反轉賣出）
+    if (rsi >= 70) {
+        masterBox.style.border = "2px solid var(--red)";
+        masterBox.style.boxShadow = "0 0 15px rgba(255, 59, 48, 0.4)";
+        masterStatus.innerText = "🛑 📢 強制賣出套現";
+        masterStatus.style.color = "var(--red)";
+
+        dBox.style.border = "1px solid var(--red)";
+        dValue.style.color = "var(--red)";
+        dTitle.innerText = "⚠️ 觸及高點反轉，執行利潤回收";
+        dValue.innerText = "TAKE PROFIT";
+        strategyDesc = "【右側動能過熱】RSI 已衝破高點反轉邊界 (" + rsi.toFixed(1) + ")，市場多頭極度超買。請立刻手動前往交易所，將之前低吸累積的現貨分批賣出，換回美元現金，鎖定 1,000 美元本金池的絕對利潤！";
+    }
+    // 情況 2：宏觀結構坍塌（最高熔斷防禦）
+    else if (!isBullState) {
+        masterBox.style.border = "2px solid var(--blue)";
+        masterBox.style.boxShadow = "0 0 15px rgba(10, 132, 255, 0.4)";
+        masterStatus.innerText = "❄️ 🛡️ 恐慌熔斷觀望";
+        masterStatus.style.color = "var(--blue)";
+
+        dBox.style.border = "1px solid var(--border-color)";
+        dValue.style.color = "#8e8e93";
+        dTitle.innerText = "波茲曼熱力學資產防禦阻斷";
+        dValue.innerText = "$0.00";
+        strategyDesc = "【最高防禦阻斷】HMM 偵測到市場結構陷入強烈恐慌相變（黑天鵝暴跌）。此時不論價格多低，系統「一票否決」任何買入意圖。禁止接飛刀，保持 1,000 刀全現金空倉避險。";
+    }
+    // 情況 3：微觀隨機噪訊過高
+    else if (!isEntropySafe) {
+        masterBox.style.border = "2px solid var(--yellow)";
+        masterBox.style.boxShadow = "0 0 15px rgba(255, 204, 0, 0.3)";
+        masterStatus.innerText = "🟡 ⏳ 噪訊過高觀望";
+        masterStatus.style.color = "var(--yellow)";
+
+        dBox.style.border = "1px solid var(--border-color)";
+        dValue.style.color = "#8e8e93";
+        dTitle.innerText = "夏農資訊熵噪訊攔截";
+        dValue.innerText = "$0.00";
+        strategyDesc = "【微觀噪訊攔截】市場隨機洗盤度（夏農資訊熵）超標，多空瘋狂上下插針。此時進場磨損極高，防禦閘門關閉。今天安心睡覺，不進行任何操作。";
+    }
+    // 情況 4：雙綠燈解鎖（允許交易區）
+    else {
+        masterBox.style.border = "2px solid var(--green)";
+        masterBox.style.boxShadow = "0 0 15px rgba(52, 199, 89, 0.4)";
+        masterStatus.innerText = "🟢 🛒 雙綠解鎖：分批買入";
+        masterStatus.style.color = "var(--green)";
+
+        dBox.style.border = "1px solid rgba(52, 199, 89, 0.3)";
+        dValue.style.color = "var(--green)";
+        dTitle.innerText = "波茲曼熱力學今日買入建議";
+
+        var recent30DaysHigh = Math.max.apply(null, highs.slice(-30));
+        var suggestedOrder = 0;
+
+        if (rsi <= 30) {
+            // 低點反轉，拉滿位能
+            suggestedOrder = 150.00;
+            strategyDesc = "💥【低點反轉觸發！】RSI 顯示市場砸盤力竭，觸及微觀低點反轉區 (" + rsi.toFixed(1) + ")。雷達回報環境安全，建議今日直接動用單筆防禦最大上限 $150.00 美元市價強勢分批買入現貨！";
         } else {
-            strategyDesc = "【高位能觀望】目前比特幣正處於 30 日最高位能區點 ($" + recent30DaysHigh.toLocaleString() + ")，熱力學能量滿載，不宜追高。";
+            // 常態波茲曼分配
+            if (currentPrice < recent30DaysHigh) {
+                var energy = (recent30DaysHigh - currentPrice) / recent30DaysHigh;
+                var kT = 0.15; 
+                var boltzmannFactor = Math.exp(energy / kT) - 1;
+                suggestedOrder = Math.min((1000 * 0.15) * boltzmannFactor, 150);
+                if(suggestedOrder < 0) suggestedOrder = 0;
+                strategyDesc = "【常態物理低吸】市場相位乾淨健全。當前價格相較於月高點跌出健康位能缺口。建議今日手動前往交易所，買入 $" + suggestedOrder.toFixed(2) + " 美元比特幣現貨。";
+            } else {
+                strategyDesc = "【高位能頂部觀望】目前比特幣正處於 30 日最高點附近 ($" + recent30DaysHigh.toLocaleString() + ")，熱力學能量過載，雖然沒有引發賣出訊號，但不宜追高。今天不買。";
+            }
         }
+        dValue.innerText = '$' + suggestedOrder.toFixed(2);
     }
 
     priceElement.innerText = '$' + currentPrice.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
-    document.getElementById('order-value').innerText = '$' + suggestedOrder.toFixed(2);
     document.getElementById('strategy-text').innerText = strategyDesc;
 }
 
@@ -322,14 +400,11 @@ function fetchTickerUpdate() {
         .then(function(res) { return res.json(); })
         .then(function(data) {
             var currentPrice = parseFloat(data.price);
-            if (cachedKlines) {
-                computeAndRender(cachedKlines, currentPrice);
-            }
+            if (cachedKlines) { computeAndRender(cachedKlines, currentPrice); }
         })
         .catch(function(e) {});
 }
 
-// 傳統的開機與攔截設計
 function runSystemInit() {
     var bar = document.getElementById('progress-bar');
     var logStatus = document.getElementById('log-status');
@@ -342,7 +417,7 @@ function runSystemInit() {
         .then(function(res) {
             if (!res.ok) throw new Error('HTTP拒絕對外連線代碼: ' + res.status);
             bar.style.width = '60%';
-            logStatus.innerText = '步驟 2/3: 解析歷史 K 線資料...';
+            logStatus.innerText = '步驟 2/3: 聯動解算四維相空間...';
             return res.json();
         })
         .then(function(kData) {
@@ -358,26 +433,20 @@ function runSystemInit() {
         .then(function(pData) {
             var currentPrice = parseFloat(pData.price);
             bar.style.width = '100%';
-            
             computeAndRender(cachedKlines, currentPrice);
-            
             document.getElementById('loading-box').style.display = 'none';
             document.getElementById('dashboard').style.display = 'block';
-
             setInterval(fetchTickerUpdate, 5000);
         })
         .catch(function(error) {
-            // ❌ 如果點不開，這次保證能在最上方大噴出錯誤
             bar.style.backgroundColor = 'var(--red)';
             logStatus.innerText = '❌ 數據載入失敗';
             logStatus.style.color = 'var(--red)';
-            
             errPanel.style.display = 'block';
-            errPanel.innerText = '【連線遭受系統阻斷】\n原因: ' + error.message + '\n\n[精確診斷]: \n你的 iPhone 隱私安全機制已成功將這份本地 HTML 檔案隔離，禁止它連上外網抓取任何數據。\n\n[唯一解法]: \n請將此代碼放到 Vercel 或 GitHub Pages 等具有網址的伺服器。';
+            errPanel.innerText = '【連線遭受系統阻斷】\n原因: ' + error.message + '\n\n[精確診斷]: \n請將此代碼更新至 GitHub Pages，取得獨立 https 網址後即可完美開機。';
         });
 }
 
-// 啟動
 runSystemInit();
 </script>
 </body>
