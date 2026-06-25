@@ -6,6 +6,9 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="量化防禦">
+    
+    <link rel="apple-touch-icon" href="icon.png">
+    
     <title>物理量化交易儀表板</title>
     <style>
         :root {
@@ -360,7 +363,6 @@ function updateMiniRow(lightId, textId, isSafe, textStr, colorVar) {
 }
 
 function processAllTimeframes(currentPrice) {
-    // 價格顏色跳振
     var priceElement = document.getElementById('btc-price');
     if (lastPrice > 0 && currentPrice !== lastPrice) {
         priceElement.style.color = currentPrice >= lastPrice ? 'var(--green)' : 'var(--red)';
@@ -390,57 +392,46 @@ function processAllTimeframes(currentPrice) {
     updateMiniRow('entropy-1h-light', 'entropy-1h-text', res1h.entropy < 2.85, res1h.entropy.toFixed(2), res1h.entropy < 2.85 ? '--green' : '--yellow');
     updateMiniRow('rsi-1h-light', 'rsi-1h-text', true, 'RSI: ' + res1h.rsi.toFixed(1), res1h.rsi >= 80 ? '--red' : (res1h.rsi <= 20 ? '--green' : '--yellow'));
 
-    // 👑 綜合決策邏輯（多時空共振資產分配）
+    // 👑 綜合決策邏輯
     var dBox = document.getElementById('decision-box');
     var dTitle = document.getElementById('decision-title');
     var dValue = document.getElementById('order-value');
     var strategyDesc = "";
 
-    // 恢復預設 UI
     dBox.style.border = "1px solid #3a3a3c"; dBox.style.background = "#1c1c1e"; dValue.style.color = "var(--blue)";
 
-    // A. 頂部套現警報優先 (任何一個級別進入極端超買，都應回收利潤)
     if (res1d.status === "RED" || res4h.status === "RED" || res1h.status === "RED") {
         dBox.style.border = "1px solid var(--red)"; dValue.style.color = "var(--red)";
         dTitle.innerText = "⚠️ 觸及多時空過熱反轉，執行利潤回收";
         dValue.innerText = "TAKE PROFIT";
         strategyDesc = "【多時空動能過熱】偵測到部分時空（1d/4h/1h）動能衝入極端超買區。請前往交易所，將對應波段買入的現貨分批賣出，套現鎖利！";
     }
-    // B. 任何一個時空發生隱馬可夫恐慌坍塌（大車下砸，全面絕對熔斷）
     else if (res1d.status === "BLUE" || res4h.status === "BLUE" || res1h.status === "BLUE") {
         dValue.innerText = "$0.00";
         strategyDesc = "【最高時空熔斷】HMM 檢測到某時空維度爆發嚴重引力坍塌（暴跌/極端插針）。系統一票否決所有買入計畫，保持全現金空倉避險。";
     }
-    // C. 橫盤震盪噪訊過度（小碎石卡磨損）
     else if (res1d.status === "YELLOW" || res4h.status === "YELLOW" || res1h.status === "YELLOW") {
         dValue.innerText = "$0.00";
         strategyDesc = "【微觀噪訊攔截】夏農資訊熵回報部分時空陷入高度隨機震盪洗盤。此時進場磨損極高，防禦閘門關閉，管住雙手。";
     }
-    // D. 🌟 乾淨安全環境：執行買入
     else {
         dValue.style.color = "var(--green)";
         dTitle.innerText = "波茲曼多時空共振買入建議";
 
-        // 三時空共振：根據時空靈敏度，動態調整單筆上限
-        // 如果日線安全，以 1h 和 4h 的 RSI 反轉作為精準抄底狙擊
         var suggestedOrder = 0;
         
         if (res1h.rsi <= 20) {
-            // 1小時線極端超賣，執行微觀強力抄底 (單筆最大上限 4%)
             suggestedOrder = currentWalletBalance * 0.04;
             strategyDesc = "💥【1小時級別·超賣狙擊】微觀相空間砸盤力竭 (1h RSI: " + res1h.rsi.toFixed(1) + ")。觸發極速單筆上限 $" + suggestedOrder.toFixed(2) + " 美元分批購入！";
         } else if (res4h.rsi <= 25) {
-            // 4小時線超賣，執行中波段抄底 (單筆最大上限 8%)
             suggestedOrder = currentWalletBalance * 0.08;
             strategyDesc = "🔥【4小時級別·動能反轉】中波段位能出現黃金缺口 (4h RSI: " + res4h.rsi.toFixed(1) + ")。核准動用 $" + suggestedOrder.toFixed(2) + " 美元切入現貨！";
         } else {
-            // 常態物理低吸：結合日線的波茲曼位能
             var recent30DaysHigh = Math.max.apply(null, res1d.highs.slice(-30));
             if (currentPrice < recent30DaysHigh) {
                 var energy = (recent30DaysHigh - currentPrice) / recent30DaysHigh;
-                var kT = 0.25; // 短週期混合同步，溫標上調至 0.25
+                var kT = 0.25;
                 var boltzmannFactor = Math.exp(energy / kT) - 1;
-                // 混合架構下常態單筆最大放行 6%
                 var maxLimit = currentWalletBalance * 0.06;
                 suggestedOrder = Math.min(maxLimit * boltzmannFactor, maxLimit);
                 if(suggestedOrder < 0) suggestedOrder = 0;
@@ -465,14 +456,12 @@ function runSystemInit() {
     
     bar.style.width = '15%'; logStatus.innerText = '正在擷取空間 1/3: 獲取日線數據...';
     
-    // 1. 抓取日線
     fetch('https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1d&limit=100').then(function(r1) {
         if(!r1.ok) throw new Error('日線節點拒絕連線');
         return r1.json();
     }).then(function(d1) {
         rawData1d = d1;
         bar.style.width = '45%'; logStatus.innerText = '正在擷取空間 2/3: 獲取4小時線數據...';
-        // 2. 抓取4小時線
         return fetch('https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=4h&limit=150');
     }).then(function(r2) {
         if(!r2.ok) throw new Error('4小時線節點拒絕連線');
@@ -480,7 +469,6 @@ function runSystemInit() {
     }).then(function(d2) {
         rawData4h = d2;
         bar.style.width = '75%'; logStatus.innerText = '正在擷取空間 3/3: 獲取1小時線數據...';
-        // 3. 抓取1小時線
         return fetch('https://api.binance.com/api/v3/klines?symbol=BTCUSDT&interval=1h&limit=200');
     }).then(function(r3) {
         if(!r3.ok) throw new Error('1小時線節點拒絕連線');
@@ -500,7 +488,6 @@ function runSystemInit() {
         
         document.getElementById('loading-box').style.display = 'none';
         document.getElementById('dashboard').style.display = 'block';
-        // 開啟 5 秒高頻更新
         setInterval(fetchTickerUpdate, 5000);
     }).catch(function(error) {
         bar.style.backgroundColor = 'var(--red)';
